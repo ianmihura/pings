@@ -1,6 +1,7 @@
 import sys,os
 from pythonping import executor as exe
 from pythonping import payload_provider
+import i18n
 
 class IPs (object):
     ips = {}
@@ -21,7 +22,7 @@ class IP (object):
     payload = 'test'
     
     # Config constants
-    timeout = 2
+    timeout = 1
     log_history = False
 
     # Ping activity information 
@@ -40,8 +41,17 @@ class IP (object):
         self.init_provider()
 
     def init_provider(self):
-        self.provider = payload_provider.Repeat(self.payload, 1)
-        self.com = exe.Communicator(self.ip, self.provider, self.timeout)
+        try:
+            self.provider = payload_provider.Repeat(self.payload, 1)
+            self.com = exe.Communicator(self.ip, self.provider, self.timeout)
+        except:
+            self.ip = '0.0.0.0'
+            self.provider = payload_provider.Repeat(self.payload, 1)
+            self.com = exe.Communicator(self.ip, self.provider, self.timeout)
+    
+    def edit_ip(self, ip):
+        self.ip = ip
+        self.init_provider()
     
     def ping(self):
         # Execute ping
@@ -60,7 +70,10 @@ class IP (object):
         self.ping_history = []
 
     def get_result(self):
+        if self.ping_last == 0:
+            return i18n.PING_WAITING.format(self.com.socket.destination)
         if self.is_timeout:
-            return 'Ping {} timeout'.format(self.com.socket.destination)
+            return i18n.PING_TIMEOUT.format(self.com.socket.destination)
         else:
-            return 'Ping {} in {} ms'.format(self.com.socket.destination, self.ping_last)
+            return i18n.PING_RESULT.format(self.com.socket.destination, self.ping_last)
+    
