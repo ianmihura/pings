@@ -1,0 +1,6 @@
+ping parse file
+startup with no input
+
+execute as module
+
+close threads
