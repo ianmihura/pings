@@ -29,6 +29,13 @@ class IPs (object):
     def get_ips(self):
         return self.ips
     
+    def get_ips_range(self, top, bottom):
+        range_ips = []
+        for idx, ip in enumerate(self.ips):
+            if (idx > top) and (idx < bottom):
+                range_ips.append(ip)
+        return range_ips
+    
     def del_ip(self, ip):
         del self.ips[ip]
 

@@ -1,6 +1,5 @@
 ping parse file
 startup with no input
+    message: Press 'a' to add an ip
 
 execute as module
-
-close threads
