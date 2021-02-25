@@ -22,9 +22,7 @@ def main():
     #         print(args.separator)
 
     # Start main curses loop
-    std = screen.Screen(args.ips.split(','))
-
-    # curses.wrapper(, )
+    curses.wrapper(screen.init_curses, args.ips.split(','))
 
 if __name__ == '__main__':
     main()

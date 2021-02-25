@@ -10,16 +10,18 @@ class IPs (object):
     def __init__(self):
         ips = {}
 
-    def add_ip(self, ip):
-        self.ips[ip] = IP(ip)
-        return self.ips[ip]
+    def add_ip(self, raw_ip):
+        ip_network = IPNetwork(raw_ip)
+        for ip_n in ip_network:
+            sip_n = str(ip_n)
+            self.ips[sip_n] = IP(sip_n)
+        return self.ips[sip_n]
 
     def add_ips(self, raw_ips):
         ip_list = []
         for raw_ip in raw_ips:
-            ip_network = IPNetwork(raw_ip)
-            for ip_n in ip_network:
-                self.add_ip(str(ip_n))
+            self.add_ip(raw_ip)
+        return self.ips
     
     def get_ip(self, ip):
         return self.ips[ip]
