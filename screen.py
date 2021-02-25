@@ -3,7 +3,7 @@ import time
 import curses
 
 from curses.textpad import Textbox, rectangle
-from threading import Thread
+from threading import Thread, active_count
 # import threading
 
 import ip
@@ -170,7 +170,7 @@ def handle_input():
 
 def draw_bar():
     range_top, range_bottom = screen.ips.get_range()
-    status_bar = i18n.STATUS_BAR_INFO.format(screen.selected_ip, range_top, range_bottom, len(screen.ips.get_ips()))
+    status_bar = i18n.STATUS_BAR_INFO.format(screen.selected_ip, range_top, range_bottom, len(screen.ips.get_ips()), active_count())
     status_bar += " " * (screen.width - len(status_bar) - 1) 
     screen.stdscr.addstr(screen.height-1, 0, status_bar, curses.color_pair(5))
 
@@ -187,6 +187,7 @@ def draw_ping():
             is_selected = True
 
         t = Thread(target=exe_ping, args=(screen.ips.get_ip(ip), idx, is_selected))
+        t.daemon = True
         t.start()
 
 def exe_ping(oip, current_line, is_selected):

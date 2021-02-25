@@ -2,7 +2,6 @@ import sys,os
 from pythonping import executor as exe
 from pythonping import payload_provider
 from netaddr import *
-import pprint
 
 class IPs (object):
     ips = {}
