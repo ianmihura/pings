@@ -3,7 +3,8 @@ import time
 import curses
 
 from curses.textpad import Textbox, rectangle
-from threading import Thread, Event
+from threading import Thread
+# import threading
 
 import ip
 import i18n
@@ -27,6 +28,7 @@ class Screen:
         self.height = 0
         self.width = 0
         self.max_lines = 0
+        self.page = 0
 
         self.selected_ip = ''
         self.is_drawing_help = False
@@ -37,6 +39,7 @@ class Screen:
         self.bottom = len(self.ips.get_ips())
         self.line = max(0, self.line)
         self.line = min(self.height-1, self.line)
+        self.page = self.bottom // self.max_lines
     
     def set_stdscr(self, stdscr):
         self.stdscr = stdscr
@@ -68,6 +71,27 @@ class Screen:
         # next cursor position is above max lines, and absolute position of next cursor could not touch the bottom
         if (direction == self.DOWN) and (next_line < self.max_lines) and (self.top + next_line < self.bottom):
             self.line = next_line
+            return
+    
+    def paging(self, direction):
+        current_page = (self.top + self.line) // self.max_lines
+        next_page = current_page + direction
+        # The last page may have fewer items than max lines,
+        # so we should adjust the current cursor position as maximum item count on last page
+        if next_page == self.page:
+            self.line = min(self.line, self.bottom % self.max_lines - 1)
+
+        # Page up
+        # if current page is not a first page, page up is possible
+        # top position can not be negative, so if top position is going to be negative, we should set it as 0
+        if (direction == self.UP) and (current_page > 0):
+            self.top = max(0, self.top - self.max_lines)
+            return
+
+        # Page down
+        # if current page is not a last page, page down is possible
+        if (direction == self.DOWN) and (current_page < self.page):
+            self.top += self.max_lines
             return
 
 screen = Screen()
@@ -117,12 +141,17 @@ def draw_loop():
         screen.k = screen.stdscr.getch()
 
 def handle_input():
-    # Switch handles input over k
     if screen.k == curses.KEY_DOWN:
         screen.scroll(screen.DOWN)
 
     elif screen.k == curses.KEY_UP:
         screen.scroll(screen.UP)
+
+    elif screen.k == curses.KEY_RIGHT:
+        screen.paging(screen.DOWN)
+
+    elif screen.k == curses.KEY_LEFT:
+        screen.paging(screen.UP)
 
     elif (screen.k == ord('x')) and (screen.selected_ip in screen.ips.get_ips()):
         screen.ips.del_ip(screen.selected_ip)
@@ -140,8 +169,8 @@ def handle_input():
         screen.toggle_drawing_help()
 
 def draw_bar():
-    # Draw status bar & help status bar
-    status_bar = i18n.STATUS_BAR_INFO.format(screen.selected_ip, screen.max_lines, len(screen.ips.get_ips()))
+    range_top, range_bottom = screen.ips.get_range()
+    status_bar = i18n.STATUS_BAR_INFO.format(screen.selected_ip, range_top, range_bottom, len(screen.ips.get_ips()))
     status_bar += " " * (screen.width - len(status_bar) - 1) 
     screen.stdscr.addstr(screen.height-1, 0, status_bar, curses.color_pair(5))
 
@@ -187,6 +216,7 @@ def display():
             screen.stdscr.addstr(idx, 0, item, curses.color_pair(2))
         else:
             screen.stdscr.addstr(idx, 0, item, curses.color_pair(1))
+        
     screen.stdscr.refresh()
 
 def request_input(title):

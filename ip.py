@@ -6,6 +6,8 @@ import pprint
 
 class IPs (object):
     ips = {}
+    range_top = 0
+    range_bottom = 0
 
     def __init__(self):
         ips = {}
@@ -31,10 +33,15 @@ class IPs (object):
     
     def get_ips_range(self, top, bottom):
         range_ips = []
+        self.range_top = top
+        self.range_bottom = bottom
         for idx, ip in enumerate(self.ips):
             if (idx > top) and (idx < bottom):
                 range_ips.append(ip)
         return range_ips
+    
+    def get_range(self):
+        return (self.range_top, self.range_bottom)
     
     def del_ip(self, ip):
         del self.ips[ip]
