@@ -4,7 +4,6 @@ import curses
 
 from curses.textpad import Textbox, rectangle
 from threading import Thread, active_count
-# import threading
 
 import ip
 import i18n

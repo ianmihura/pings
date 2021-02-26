@@ -1,6 +1,5 @@
 ARGS_HELP_IPS = "List of IP addresses or subnets to ping, separated by a comma. Example 8.8.8.8,4.4.4.4/29"
-ARGS_HELP_FILE = "File containing ip addresses or subnets."
-ARGS_HELP_FILE_SEPARATOR = "Separator of IPs in file imported. Default: comma (,)"
+ARGS_HELP_FILE = "File containing ip addresses or subnets, separated by commas."
 
 DRAW_TITLE = "Pinging your IPs:"
 
