@@ -8,7 +8,6 @@ from threading import Thread, active_count
 import ip
 import i18n
 
-TOP_SPACING = 0
 PING_LOOP_TIMEOUT = 0.1
 
 class Screen:
@@ -21,7 +20,7 @@ class Screen:
         self.k = 0
 
         # Scroll & screen
-        self.line = TOP_SPACING
+        self.line = 0
         self.top = 0
         self.bottom = 0
         self.height = 0
@@ -179,7 +178,9 @@ def draw_bar():
         screen.stdscr.addstr(screen.height-2, 0, help_status_bar, curses.color_pair(5))
 
 def draw_ping():
-    for idx, ip in enumerate(screen.ips.get_ips_range(screen.top, screen.top + screen.max_lines)):
+    no_ips = True
+    for idx, ip in enumerate(screen.ips.get_ips_range(screen.top -1, screen.top + screen.max_lines)):
+        no_ips = False
         is_selected = False
         if (idx == screen.line):
             screen.selected_ip = ip
@@ -188,6 +189,9 @@ def draw_ping():
         t = Thread(target=exe_ping, args=(screen.ips.get_ip(ip), idx, is_selected))
         t.daemon = True
         t.start()
+
+    if no_ips:
+        screen.stdscr.addstr(0,0,i18n.DRAW_NO_IP)
 
 def exe_ping(oip, current_line, is_selected):
     ip, ping_last, is_timeout = oip.get_result()

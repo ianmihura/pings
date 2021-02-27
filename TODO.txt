@@ -1,7 +1,11 @@
+
+history graph on the right
+name ips
 save file
-startup with no input
-    message: Press 'a' to add an ip
+
+
 
 execute as module
-
-showing one less ip bug
+    pyinstaller main.py
+    change name to pings.exe
+    add to PATH

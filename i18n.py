@@ -2,6 +2,7 @@ ARGS_HELP_IPS = "List of IP addresses or subnets to ping, separated by a comma. 
 ARGS_HELP_FILE = "File containing ip addresses or subnets, separated by commas."
 
 DRAW_TITLE = "Pinging your IPs:"
+DRAW_NO_IP = "Press 'a' to add an ip"
 
 STATUS_BAR_INFO = "Press 'h' to toggle help bar | Selected IP: {} | Showing entry {} to {} of {} | Threads {}"
 STATUS_BAR_HELP = "Press 'q' to exit | Navigate with the arrows | Press 'x' to delete selected ip | Press 'a' to add an IP range"
