@@ -59,7 +59,7 @@ class IP (object):
 
     # Constants
     PAYLOAD = 'test'
-    TIMEOUT = 2000 # 2 seconds
+    TIMEOUT = 2
     MS_DECIMALS = 2
     ZERO_IP = '0.0.0.0'
 
@@ -88,7 +88,7 @@ class IP (object):
 
         # Convert to ms rounded to 2 decimal places
         self.ping_last = round(self.com.responses._responses[0].time_elapsed * 1000, self.MS_DECIMALS)
-        self.is_timeout = self.ping_last == self.TIMEOUT
+        self.is_timeout = self.ping_last == (self.TIMEOUT * 1000)
 
         if self.log_history:
             self.ping_history.append(self.com.responses._responses[0])
