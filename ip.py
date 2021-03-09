@@ -12,10 +12,15 @@ class IPs (object):
         ips = {}
 
     def add_ip(self, raw_ip):
-        ip_network = IPNetwork(raw_ip)
+        try:
+            ip_network = IPNetwork(raw_ip)
+        except:
+            ip_network = [IP.ZERO_IP]
+
         for ip_n in ip_network:
             sip_n = str(ip_n)
             self.ips[sip_n] = IP(sip_n)
+        
         return self.ips[sip_n]
 
     def add_ips(self, raw_ips):

@@ -129,6 +129,20 @@ class Screen:
         if (direction == self.DOWN) and (current_page < self.page):
             self.top += self.max_lines
             return
+    
+    # Request user input
+    def request_input(self, title):
+        self.stdscr.addstr(0, 0, title)
+        add_stdscr = curses.newwin(1, 60, 2, 1)
+        
+        rectangle(self.stdscr, 1, 0, 3, 62)
+        self.stdscr.refresh()
+
+        box = Textbox(add_stdscr)
+        box.stripspaces = True
+        box.edit()
+
+        return box.gather()[:-1]
 
 screen = Screen()
 
@@ -197,12 +211,12 @@ def handle_input():
         screen.set_status(i18n.DELETE_IP_SUCCESS.format(screen.selected_ip))
 
     elif screen.k == ord('a'):
-        new_ip = request_input(i18n.ADD_IP_TITLE)
+        new_ip = screen.request_input(i18n.ADD_IP_TITLE)
         screen.ips.add_ip(new_ip)
         screen.set_status(i18n.ADD_IP_SUCCESS.format(new_ip))
 
     elif screen.k == ord('e'):
-        new_ip = request_input(i18n.EDIT_IP_TITLE.format(screen.selected_ip))
+        new_ip = screen.request_input(i18n.EDIT_IP_TITLE.format(screen.selected_ip))
         screen.ips.get_ip(screen.selected_ip).edit_ip(new_ip)
 
     elif screen.k == ord('h'):
@@ -210,7 +224,8 @@ def handle_input():
 
     elif screen.k == ord('s'):
         current_file_path = screen.get_current_file_path()
-        file_path = request_input(i18n.SAVE_FILE_PATH.format(current_file_path if current_file_path else '> NO CURRENT FILE <'))        
+        file_path = screen.request_input(i18n.SAVE_FILE_PATH.format(
+            current_file_path if current_file_path else '> NO CURRENT FILE <'))        
         result_status = xfile.save_file(file_path, current_file_path, screen.ips.get_ips())
         screen.set_status(result_status)
 
@@ -274,16 +289,3 @@ def exe_ping(oip, current_line, is_selected):
     
     oip.ping()
     sys.exit()
-
-def request_input(title):
-    screen.stdscr.addstr(0, 0, title)
-    add_stdscr = curses.newwin(1, 60, 2, 1)
-    
-    rectangle(screen.stdscr, 1, 0, 3, 62)
-    screen.stdscr.refresh()
-
-    box = Textbox(add_stdscr)
-    box.stripspaces = True
-    box.edit()
-
-    return box.gather()[:-1]
