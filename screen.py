@@ -9,12 +9,12 @@ import ip
 import i18n
 import xfile
 
-PING_LOOP_TIMEOUT = 0.1
-
 class Screen:
 
     UP = -1
     DOWN = 1
+    STATUS_BAR_SLEEP = 5
+    PING_LOOP_SLEEP = 0.1
 
     def __init__(self):
         # Keyboard stroke
@@ -28,10 +28,11 @@ class Screen:
         self.width = 0
         self.max_lines = 0
         self.page = 0
+
+        # Other screen settings
         self.current_file_path = ''
         self.status = ''
         self.status_history = []
-
         self.selected_ip = ''
         self.is_drawing_help = False
         self.is_drawing_status = False
@@ -61,14 +62,14 @@ class Screen:
     def set_status(self, new_status):
         self.status = new_status
         self.status_history.append(new_status)
-        
+
         t = Thread(target=self._show_status, args=())
         t.daemon = True
         t.start()
 
     def _show_status(self):
         self.is_drawing_status = True
-        time.sleep(5)
+        time.sleep(self.STATUS_BAR_SLEEP)
         self.is_drawing_status = False
         sys.exit()
 
@@ -161,16 +162,19 @@ def draw_loop():
 
         # Handle input
         handle_input()
+
+        # Ping loop
+        draw_ping()
             
         # Draw title and status bar
         draw_bar()
 
-        # Ping loop
-        draw_ping()
+        # Draw time graph
+        # draw_graph()
 
         # Closing loop
         screen.stdscr.refresh()
-        time.sleep(PING_LOOP_TIMEOUT)
+        time.sleep(screen.PING_LOOP_SLEEP)
 
         # Next input
         screen.k = screen.stdscr.getch()
@@ -190,11 +194,12 @@ def handle_input():
 
     elif (screen.k == ord('x')) and (screen.selected_ip in screen.ips.get_ips()):
         screen.ips.del_ip(screen.selected_ip)
-        screen.scroll(screen.UP)
+        screen.set_status(i18n.DELETE_IP_SUCCESS.format(screen.selected_ip))
 
     elif screen.k == ord('a'):
         new_ip = request_input(i18n.ADD_IP_TITLE)
         screen.ips.add_ip(new_ip)
+        screen.set_status(i18n.ADD_IP_SUCCESS.format(new_ip))
 
     elif screen.k == ord('e'):
         new_ip = request_input(i18n.EDIT_IP_TITLE.format(screen.selected_ip))
@@ -211,7 +216,11 @@ def handle_input():
 
 def draw_bar():
     range_top, range_bottom = screen.ips.get_range()
-    info_bar = i18n.INFO_BAR.format(screen.selected_ip, range_top, range_bottom, len(screen.ips.get_ips()), active_count())
+    info_bar = i18n.INFO_BAR.format(
+        screen.selected_ip, 
+        range_top if range_top >= 0 else 0,
+        range_bottom,
+        len(screen.ips.get_ips()), active_count())
     info_bar += " " * (screen.width - len(info_bar) - 1) 
     screen.stdscr.addstr(screen.height-1, 0, info_bar, curses.color_pair(5))
 
@@ -243,6 +252,9 @@ def draw_ping():
 
     if no_ips:
         screen.stdscr.addstr(0,0,i18n.DRAW_NO_IP)
+
+# def draw_graph():
+    # for column_num, value in enumerate()
 
 def exe_ping(oip, current_line, is_selected):
     ip, ping_last, is_timeout = oip.get_result()

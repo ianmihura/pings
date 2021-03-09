@@ -18,16 +18,13 @@ def parse_file(file):
 
 def save_file(file_path, current_file_path, ips):
     result = ''
-    if file_path:
-        result = _save_file(file_path, ips)
+    if file_path: result = _save_file(file_path, ips, False)
     else:
-        if current_file_path:
-            result = _save_file(current_file_path, ips)
-        else:
-            result = i18n.SAVE_FILE_PATH_NOT_PRESENT
+        if current_file_path: result = _save_file(current_file_path, ips, True)
+        else: result = i18n.SAVE_FILE_PATH_NOT_PRESENT
     return result
 
-def _save_file(file_path, ips):
+def _save_file(file_path, ips, is_overwrite):
     result = ''
     w_ips = _parse_ips(ips)
 
@@ -36,8 +33,10 @@ def _save_file(file_path, ips):
         f.truncate(0)
         f.write(w_ips)
         f.close()
-        result = i18n.SAVE_FILE_SUCCESS
-        
+
+        if is_overwrite: result = i18n.SAVE_FILE_SUCCESS_OVERWRITE.format(file_path)
+        else: result = i18n.SAVE_FILE_SUCCESS_NEW.format(file_path)
+
     except:
         result = i18n.SAVE_FILE_UNABLE_ACCESS.format(file_path)
 

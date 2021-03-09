@@ -13,10 +13,12 @@ PING_WAITING = "... {}"
 
 ADD_IP_TITLE = "Type new IP address..."
 ADD_IP_ERROR = "Error while adding new IP address"
-
+ADD_IP_SUCCESS = "IP/s {} added succesfully"
 EDIT_IP_TITLE = "Editing IP address, current IP: {}"
+DELETE_IP_SUCCESS = "IP {} deleted"
 
 SAVE_FILE_PATH = "Save file as... (Leave blank to use current file: {})"
 SAVE_FILE_PATH_NOT_PRESENT = "File path not present"
-SAVE_FILE_SUCCESS = "File saved successfully"
+SAVE_FILE_SUCCESS_NEW = "File {} saved successfully"
+SAVE_FILE_SUCCESS_OVERWRITE = "Overwrite file {} saved successfully"
 SAVE_FILE_UNABLE_ACCESS = "Unable to access file {}"
