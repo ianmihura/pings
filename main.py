@@ -18,7 +18,7 @@ def main():
     if (args.ips):
         raw_ips += args.ips.split(',')
 
-    if (args.file):
+    if (args.file): 
         raw_ips += xfile.parse_file(args.file)
         screen.screen.set_current_file_path(args.file)
 
