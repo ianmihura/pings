@@ -4,6 +4,7 @@ import curses
 
 import screen
 import i18n
+import xfile
 
 def main():
     # Get parsed arguements
@@ -18,24 +19,11 @@ def main():
         raw_ips += args.ips.split(',')
 
     if (args.file):
-        raw_ips += parse_file(args.file)
+        raw_ips += xfile.parse_file(args.file)
+        screen.screen.set_current_file_path(args.file)
 
     # Start main curses loop
     curses.wrapper(screen.init_curses, raw_ips)
-
-def parse_file(file):
-    if not os.path.isfile(file):
-       print("File path {} does not exist. Exiting...".format(file))
-       sys.exit()
-
-    try:
-        f = open(file, 'r')
-        raw_ips = f.readline().split(',')
-        f.close()
-        return raw_ips
-
-    except:
-        print('Unable to access file {}'.format(file))
 
 if __name__ == '__main__':
     main()

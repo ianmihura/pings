@@ -46,38 +46,37 @@ class IPs (object):
         del self.ips[ip]
 
 class IP (object):
+    # Config
     ip = ''
-    payload = 'test'
-    
-    # Config constants
-    timeout = 1
     log_history = False
 
-    # Ping activity information 
+    # Ping activity data 
     is_timeout = False
     ping_last = 0
     ping_history = []
     provider = {}
     com = {}
 
-    def __init__(self, ip, timeout=2, payload='test', log_history=False):
-        self.ip = ip
-        self.timeout = timeout
-        self.payload = payload
-        self.log_history = log_history
+    # Constants
+    PAYLOAD = 'test'
+    TIMEOUT = 2
+    MS_DECIMALS = 2
+    ZERO_IP = '0.0.0.0'
 
+    def __init__(self, ip):
+        self.ip = ip
         self.init_provider()
 
     def init_provider(self):
         try:
             self._init_provider()
         except:
-            self.ip = '0.0.0.0'
+            self.ip = self.ZERO_IP
             self._init_provider()
     
     def _init_provider(self):
-        self.provider = payload_provider.Repeat(self.payload, 1)
-        self.com = exe.Communicator(self.ip, self.provider, self.timeout)
+        self.provider = payload_provider.Repeat(self.PAYLOAD, 1)
+        self.com = exe.Communicator(self.ip, self.provider, self.TIMEOUT)
     
     def edit_ip(self, ip):
         self.ip = ip
@@ -88,12 +87,18 @@ class IP (object):
         self.com.run(match_payloads=False)
 
         # Convert to ms rounded to 2 decimal places
-        self.ping_last = round(self.com.responses._responses[0].time_elapsed * 1000, 2)
-        self.is_timeout = self.ping_last == (self.timeout * 1000)
+        self.ping_last = round(self.com.responses._responses[0].time_elapsed * 1000, self.MS_DECIMALS)
+        self.is_timeout = self.ping_last == (self.TIMEOUT * 1000)
 
         if self.log_history:
             self.ping_history.append(self.com.responses._responses[0])
         
+    def toggle_log_history(self, log_history='none'):
+        if log_history == 'none':
+            self.log_history = not self.log_history
+        else:
+            self.log_history = log_history
+
     def clear_history(self):
         self.ping_history = []
 

@@ -7,6 +7,7 @@ from threading import Thread, active_count
 
 import ip
 import i18n
+import xfile
 
 PING_LOOP_TIMEOUT = 0.1
 
@@ -27,9 +28,13 @@ class Screen:
         self.width = 0
         self.max_lines = 0
         self.page = 0
+        self.current_file_path = ''
+        self.status = ''
+        self.status_history = []
 
         self.selected_ip = ''
         self.is_drawing_help = False
+        self.is_drawing_status = False
     
     def init_meassures(self):
         self.height, self.width = self.stdscr.getmaxyx()
@@ -44,7 +49,39 @@ class Screen:
     
     def toggle_drawing_help(self):
         self.is_drawing_help = not self.is_drawing_help
+
+    # File path
+    def set_current_file_path(self, file_path):
+        self.current_file_path = file_path
+
+    def get_current_file_path(self):
+        return self.current_file_path
+
+    # Status
+    def set_status(self, new_status):
+        self.status = new_status
+        self.status_history.append(new_status)
+        
+        t = Thread(target=self._show_status, args=())
+        t.daemon = True
+        t.start()
+
+    def _show_status(self):
+        self.is_drawing_status = True
+        time.sleep(5)
+        self.is_drawing_status = False
+        sys.exit()
+
+    def get_status(self):
+        return self.status
     
+    def get_status_history(self):
+        return self.status_history
+    
+    def clean_status_history(self):
+        self.status_history = []
+    
+    # Scrolling & paging
     def scroll(self, direction):
         """Scrolling the window when pressing up/down arrow keys"""
         # next cursor position after scrolling
@@ -162,21 +199,35 @@ def handle_input():
     elif screen.k == ord('e'):
         new_ip = request_input(i18n.EDIT_IP_TITLE.format(screen.selected_ip))
         screen.ips.get_ip(screen.selected_ip).edit_ip(new_ip)
-        
+
     elif screen.k == ord('h'):
         screen.toggle_drawing_help()
 
+    elif screen.k == ord('s'):
+        current_file_path = screen.get_current_file_path()
+        file_path = request_input(i18n.SAVE_FILE_PATH.format(current_file_path if current_file_path else '> NO CURRENT FILE <'))        
+        result_status = xfile.save_file(file_path, current_file_path, screen.ips.get_ips())
+        screen.set_status(result_status)
+
 def draw_bar():
     range_top, range_bottom = screen.ips.get_range()
-    status_bar = i18n.STATUS_BAR_INFO.format(screen.selected_ip, range_top, range_bottom, len(screen.ips.get_ips()), active_count())
-    status_bar += " " * (screen.width - len(status_bar) - 1) 
-    screen.stdscr.addstr(screen.height-1, 0, status_bar, curses.color_pair(5))
+    info_bar = i18n.INFO_BAR.format(screen.selected_ip, range_top, range_bottom, len(screen.ips.get_ips()), active_count())
+    info_bar += " " * (screen.width - len(info_bar) - 1) 
+    screen.stdscr.addstr(screen.height-1, 0, info_bar, curses.color_pair(5))
+
+    next_available = -2
 
     if (screen.is_drawing_help):
-        help_status_bar = i18n.STATUS_BAR_HELP 
-        help_status_bar += (" " * (screen.width - len(help_status_bar) - 1))
-        screen.stdscr.addstr(screen.height-2, 0, help_status_bar, curses.color_pair(5))
-
+        help_bar = i18n.HELP_BAR
+        help_bar += (" " * (screen.width - len(help_bar) - 1))
+        screen.stdscr.addstr(screen.height + next_available, 0, help_bar, curses.color_pair(5))
+        next_available -= 1
+    
+    if (screen.is_drawing_status):
+        status_bar = screen.get_status()
+        status_bar += (" " * (screen.width - len(status_bar) - 1))
+        screen.stdscr.addstr(screen.height + next_available, 0, status_bar, curses.color_pair(5))
+    
 def draw_ping():
     no_ips = True
     for idx, ip in enumerate(screen.ips.get_ips_range(screen.top -1, screen.top + screen.max_lines)):
@@ -211,17 +262,6 @@ def exe_ping(oip, current_line, is_selected):
     
     oip.ping()
     sys.exit()
-
-def display():
-    screen.stdscr.erase()
-    for idx, item in screen.ips.get_ips_range(screen.top, screen.top + screen.max_lines):
-
-        if idx == screen.line:
-            screen.stdscr.addstr(idx, 0, item, curses.color_pair(2))
-        else:
-            screen.stdscr.addstr(idx, 0, item, curses.color_pair(1))
-        
-    screen.stdscr.refresh()
 
 def request_input(title):
     screen.stdscr.addstr(0, 0, title)
