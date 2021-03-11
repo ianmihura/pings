@@ -11,7 +11,7 @@ class IPs (object):
     def __init__(self):
         ips = {}
 
-    def add_ip(self, raw_ip):
+    def add_ip(self, raw_ip, ip_name=''):
         try:
             ip_network = IPNetwork(raw_ip)
         except:
@@ -19,14 +19,13 @@ class IPs (object):
 
         for ip_n in ip_network:
             sip_n = str(ip_n)
-            self.ips[sip_n] = IP(sip_n)
+            self.ips[sip_n] = IP(sip_n, ip_name)
         
         return self.ips[sip_n]
 
-    def add_ips(self, raw_ips):
-        ip_list = []
-        for raw_ip in raw_ips:
-            self.add_ip(raw_ip)
+    def add_ips(self, raw_ips, raw_ips_names):
+        for i, raw_ip in enumerate(raw_ips):
+            self.add_ip(raw_ip, raw_ips_names[i])
         return self.ips
     
     def get_ip(self, ip):
@@ -54,6 +53,7 @@ class IP (object):
     # Config
     ip = ''
     log_history = False
+    name = ''
 
     # Ping activity data 
     is_timeout = False
@@ -68,9 +68,10 @@ class IP (object):
     MS_DECIMALS = 2
     ZERO_IP = '0.0.0.0'
 
-    def __init__(self, ip):
+    def __init__(self, ip, name=''):
         self.ip = ip
         self.init_provider()
+        self.name = name
 
     def init_provider(self):
         try:
@@ -108,4 +109,11 @@ class IP (object):
         self.ping_history = []
 
     def get_result(self):
-        return (self.com.socket.destination, self.ping_last, self.is_timeout)
+        return (self.ip, self.name, self.ping_last, self.is_timeout)
+
+    # Custom name
+    def set_name(self, name):
+        self.name = name
+    
+    def get_name(self):
+        return self.name

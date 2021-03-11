@@ -16,14 +16,14 @@ def main():
     raw_ips = []
     
     if (args.ips):
-        raw_ips += args.ips.split(',')
+        raw_ips = args.ips.split(',')
 
     if (args.file): 
-        raw_ips += xfile.parse_file(args.file)
+        (raw_ips, raw_ips_names) = xfile.parse_file(args.file)
         screen.screen.set_current_file_path(args.file)
 
     # Start main curses loop
-    curses.wrapper(screen.init_curses, raw_ips)
+    curses.wrapper(screen.init_curses, raw_ips, raw_ips_names)
 
 if __name__ == '__main__':
     main()

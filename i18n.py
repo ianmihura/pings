@@ -14,7 +14,7 @@ PING_WAITING = "... {}"
 ADD_IP_TITLE = "Type new IP address..."
 ADD_IP_ERROR = "Error while adding new IP address"
 ADD_IP_SUCCESS = "IP/s {} added succesfully"
-EDIT_IP_TITLE = "Editing IP address, current IP: {}"
+EDIT_IP_TITLE = "Edit IP address custon name. IP: {}, current name: {}. Leave blank to erase name."
 DELETE_IP_SUCCESS = "IP {} deleted"
 
 SAVE_FILE_PATH = "Save file as... (Leave blank to use current file: {})"

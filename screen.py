@@ -146,11 +146,11 @@ class Screen:
 
 screen = Screen()
 
-def init_curses(stdscr, raw_ips):
+def init_curses(stdscr, raw_ips, raw_ips_names):
 
     # Init ips
     screen.ips = ip.IPs()
-    screen.ips.add_ips(raw_ips)
+    screen.ips.add_ips(raw_ips, raw_ips_names)
 
     # Clear and refresh the screen for a blank canvas
     screen.set_stdscr(stdscr)
@@ -169,7 +169,7 @@ def init_curses(stdscr, raw_ips):
     draw_loop()
 
 def draw_loop():
-    while (screen.k is not ord('q')):
+    while (True):
         # Init
         screen.stdscr.clear()
         screen.init_meassures()
@@ -182,9 +182,6 @@ def draw_loop():
             
         # Draw title and status bar
         draw_bar()
-
-        # Draw time graph
-        # draw_graph()
 
         # Closing loop
         screen.stdscr.refresh()
@@ -215,9 +212,10 @@ def handle_input():
         screen.ips.add_ip(new_ip)
         screen.set_status(i18n.ADD_IP_SUCCESS.format(new_ip))
 
-    elif screen.k == ord('e'):
-        new_ip = screen.request_input(i18n.EDIT_IP_TITLE.format(screen.selected_ip))
-        screen.ips.get_ip(screen.selected_ip).edit_ip(new_ip)
+    elif screen.k == ord('n'):
+        old_name = screen.ips.get_ip(screen.selected_ip).get_name()
+        new_name = screen.request_input(i18n.EDIT_IP_TITLE.format(screen.selected_ip, old_name))
+        screen.ips.get_ip(screen.selected_ip).set_name(new_name)
 
     elif screen.k == ord('h'):
         screen.toggle_drawing_help()
@@ -228,6 +226,13 @@ def handle_input():
             current_file_path if current_file_path else '> NO CURRENT FILE <'))        
         result_status = xfile.save_file(file_path, current_file_path, screen.ips.get_ips())
         screen.set_status(result_status)
+        
+    elif screen.k == ord('q'):
+        # current_file_path = screen.get_current_file_path()
+        # file_path = screen.request_input(i18n.SAVE_FILE_PATH.format(
+        #     current_file_path if current_file_path else '> NO CURRENT FILE <'))        
+        # xfile.save_file(file_path, current_file_path, screen.ips.get_ips())
+        sys.exit()
 
 def draw_bar():
     range_top, range_bottom = screen.ips.get_range()
@@ -268,11 +273,9 @@ def draw_ping():
     if no_ips:
         screen.stdscr.addstr(0,0,i18n.DRAW_NO_IP)
 
-# def draw_graph():
-    # for column_num, value in enumerate()
-
 def exe_ping(oip, current_line, is_selected):
-    ip, ping_last, is_timeout = oip.get_result()
+    ip, name, ping_last, is_timeout = oip.get_result()
+    if name: ip = '{} - {}'.format(name, ip)
 
     if is_timeout and is_selected:
         screen.stdscr.addstr(current_line, 0, i18n.PING_TIMEOUT.format(ip), curses.color_pair(4))

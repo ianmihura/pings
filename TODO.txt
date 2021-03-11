@@ -1,7 +1,4 @@
-history graph on the right
-status history export
-name ips
-    save file with names
+save file on exit
 
 execute as module
     pyinstaller main.py
