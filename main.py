@@ -14,11 +14,15 @@ def main():
 
     args = parser.parse_args()
     raw_ips = []
+    raw_ips_names = []
     
+    # Enter via args
     if (args.ips):
         raw_ips = args.ips.split(',')
+        raw_ips_names = [''] * len(raw_ips)
 
-    if (args.file): 
+    # Enter via file
+    elif (args.file): 
         (raw_ips, raw_ips_names) = xfile.parse_file(args.file)
         screen.screen.set_current_file_path(args.file)
 
