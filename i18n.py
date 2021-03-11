@@ -5,7 +5,7 @@ DRAW_TITLE = "Pinging your IPs:"
 DRAW_NO_IP = "Press 'a' to add an ip"
 
 INFO_BAR = "Press 'h' to toggle help bar | Selected IP: {} | Showing entry {} to {} of {} | Threads {}"
-HELP_BAR = "Press 'q' to exit | Navigate with the arrows | Press 'x' to delete selected ip | Press 'a' to add an IP range"
+HELP_BAR = "Press 'q' to exit | Press 'x' to delete selected ip | Press 'a' to add an IP range | Press 'e' to edit selected IP name"
 
 PING_TIMEOUT = "Ping {} timeout"
 PING_RESULT = "Ping {} in {} ms"
@@ -22,3 +22,4 @@ SAVE_FILE_PATH_NOT_PRESENT = "File path not present"
 SAVE_FILE_SUCCESS_NEW = "File {} saved successfully"
 SAVE_FILE_SUCCESS_OVERWRITE = "Overwrite file {} saved successfully"
 SAVE_FILE_UNABLE_ACCESS = "Unable to access file {}"
+SAVE_FILE_EXIT = "Exiting... Save file? y/n (Current file: {})"

@@ -225,14 +225,17 @@ def handle_input():
         file_path = screen.request_input(i18n.SAVE_FILE_PATH.format(
             current_file_path if current_file_path else '> NO CURRENT FILE <'))        
         result_status = xfile.save_file(file_path, current_file_path, screen.ips.get_ips())
+        screen.set_current_file_path(file_path)
         screen.set_status(result_status)
         
     elif screen.k == ord('q'):
-        # current_file_path = screen.get_current_file_path()
-        # file_path = screen.request_input(i18n.SAVE_FILE_PATH.format(
-        #     current_file_path if current_file_path else '> NO CURRENT FILE <'))        
-        # xfile.save_file(file_path, current_file_path, screen.ips.get_ips())
-        sys.exit()
+        current_file_path = screen.get_current_file_path()
+        if not current_file_path: sys.exit()
+        else:
+            save_file = screen.request_input(i18n.SAVE_FILE_EXIT.format(current_file_path)).upper()
+            if save_file == 'Y' or save_file == 'YES':
+                xfile.save_file(current_file_path, current_file_path, screen.ips.get_ips())
+            sys.exit()
 
 def draw_bar():
     range_top, range_bottom = screen.ips.get_range()
