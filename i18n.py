@@ -4,7 +4,7 @@ ARGS_HELP_FILE = "File containing ip addresses or subnets, separated by commas."
 DRAW_TITLE = "Pinging your IPs:"
 DRAW_NO_IP = "Press 'a' to add an ip"
 
-INFO_BAR = "Press 'h' to toggle help bar | Selected IP: {} | Showing entry {} to {} of {} | Threads {}"
+INFO_BAR = "Press 'h' to toggle help bar | Selected IP: {} | Showing entry {}-{} (total: {}) | Threads {}"
 HELP_BAR = "Press 'q' to exit | Press 'x' to delete selected ip | Press 'a' to add an IP range | Press 'e' to edit selected IP name"
 
 PING_TIMEOUT = "Ping {} timeout"

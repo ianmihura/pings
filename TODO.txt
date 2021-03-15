@@ -1,6 +1,5 @@
-save file on exit
 
 execute as module
-    pyinstaller main.py
+    compile.bat
     change name to pings.exe
     add to PATH

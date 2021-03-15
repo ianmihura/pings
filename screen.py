@@ -92,22 +92,22 @@ class Screen:
         # current cursor position is 0, but top position is greater than 0
         if (direction == self.UP) and (self.top > 0 and self.line == 0):
             self.top += direction
-            return
+            
         # Down direction scroll overflow
         # next cursor position touch the max lines, but absolute position of max lines could not touch the bottom
-        if (direction == self.DOWN) and (next_line == self.max_lines -1) and (self.top + self.max_lines < self.bottom):
+        elif (direction == self.DOWN) and (next_line == self.max_lines -1) and (self.top + self.max_lines < self.bottom):
             self.top += direction
-            return
+            
         # Scroll up
         # current cursor position or top position is greater than 0
-        if (direction == self.UP) and (self.top > 0 or self.line > 0):
+        elif (direction == self.UP) and (self.top > 0 or self.line > 0):
             self.line = next_line
-            return
+            
         # Scroll down
         # next cursor position is above max lines, and absolute position of next cursor could not touch the bottom
-        if (direction == self.DOWN) and (next_line < self.max_lines) and (self.top + next_line < self.bottom):
+        elif (direction == self.DOWN) and (next_line < self.max_lines) and (self.top + next_line < self.bottom):
             self.line = next_line
-            return
+            
     
     def paging(self, direction):
         current_page = (self.top + self.line) // self.max_lines
@@ -122,13 +122,11 @@ class Screen:
         # top position can not be negative, so if top position is going to be negative, we should set it as 0
         if (direction == self.UP) and (current_page > 0):
             self.top = max(0, self.top - self.max_lines)
-            return
 
         # Page down
         # if current page is not a last page, page down is possible
-        if (direction == self.DOWN) and (current_page < self.page):
+        elif (direction == self.DOWN) and (current_page < self.page):
             self.top += self.max_lines
-            return
     
     # Request user input
     def request_input(self, title):
@@ -242,8 +240,9 @@ def draw_bar():
     info_bar = i18n.INFO_BAR.format(
         screen.selected_ip, 
         range_top if range_top >= 0 else 0,
-        range_bottom,
-        len(screen.ips.get_ips()), active_count())
+        min(len(screen.ips.get_ips()), range_bottom),
+        len(screen.ips.get_ips()),
+        active_count())
     info_bar += " " * (screen.width - len(info_bar) - 1) 
     screen.stdscr.addstr(screen.height-1, 0, info_bar, curses.color_pair(5))
 
@@ -273,8 +272,7 @@ def draw_ping():
         t.daemon = True
         t.start()
 
-    if no_ips:
-        screen.stdscr.addstr(0,0,i18n.DRAW_NO_IP)
+    if no_ips: screen.stdscr.addstr(0,0,i18n.DRAW_NO_IP)
 
 def exe_ping(oip, current_line, is_selected):
     ip, name, ping_last, is_timeout = oip.get_result()
