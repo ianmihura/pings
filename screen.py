@@ -38,6 +38,7 @@ class Screen:
         self.selected_ip = ''
         self.is_drawing_help = False
         self.is_drawing_status = False
+        self.close = False
     
     def init_meassures(self):
         self.height, self.width = self.stdscr.getmaxyx()
@@ -183,6 +184,7 @@ def init_curses(stdscr, raw_ips, raw_ips_names):
     curses.init_pair(5, curses.COLOR_BLACK, curses.COLOR_WHITE) # Status bar, neutral, selected
 
     t = Thread(target=ping_loop, args=())
+    t.daemon = True
     t.start()
 
     draw_loop()
@@ -195,6 +197,9 @@ def ping_loop():
             t.start()
         
         time.sleep(screen.PING_LOOP_SLEEP)
+
+        if screen.close:
+            sys.exit()
 
 def draw_loop():
     while (True):
@@ -269,6 +274,7 @@ def handle_input():
         
     elif screen.k == ord('q'):
         current_file_path = screen.get_current_file_path()
+        screen.close = True
         if not current_file_path: sys.exit()
         else:
             save_file = screen.request_input(i18n.SAVE_FILE_EXIT.format(current_file_path)).upper()

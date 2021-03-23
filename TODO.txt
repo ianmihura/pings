@@ -7,3 +7,5 @@ execute as module
 enter on ip -- config
     edit name
     delete
+
+close loop
