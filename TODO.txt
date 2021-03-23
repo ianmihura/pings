@@ -3,3 +3,7 @@ execute as module
     compile.bat
     change name to pings.exe
     add to PATH
+
+enter on ip -- config
+    edit name
+    delete

@@ -117,3 +117,7 @@ class IP (object):
     
     def get_name(self):
         return self.name
+    
+    # Timeout
+    def set_timeout(self, timeout):
+        self.TIMEOUT = timeout

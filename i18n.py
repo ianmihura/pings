@@ -23,3 +23,6 @@ SAVE_FILE_SUCCESS_NEW = "File {} saved successfully"
 SAVE_FILE_SUCCESS_OVERWRITE = "Overwrite file {} saved successfully"
 SAVE_FILE_UNABLE_ACCESS = "Unable to access file {}"
 SAVE_FILE_EXIT = "Exiting... Save file? y/n (Current file: {})"
+
+CONFIG_TIMEOUT = "Current timeout for pings is {} seconds. Type new number below, leave blank to keep current."
+CONFIG_PING_LOOP_SLEEP = "Current sleep time between pings: {} seconds. Type new number below, leave blank to keep current."

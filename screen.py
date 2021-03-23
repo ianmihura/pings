@@ -14,7 +14,9 @@ class Screen:
     UP = -1
     DOWN = 1
     STATUS_BAR_SLEEP = 5
-    PING_LOOP_SLEEP = 0.1
+    CORE_LOOP_SLEEP = 0.1
+    PING_LOOP_SLEEP = 1
+    TIMEOUT = 2
 
     def __init__(self):
         # Keyboard stroke
@@ -50,6 +52,22 @@ class Screen:
     
     def toggle_drawing_help(self):
         self.is_drawing_help = not self.is_drawing_help
+
+    def set_timeout(self, timeout):
+        try:
+            timeout = float(timeout)
+            self.TIMEOUT = timeout
+            for ip in self.ips.get_ips():
+                self.ips.get_ip(ip).set_timeout(timeout)
+        except:
+            return
+
+    def set_ping_loop_sleep(self, ping_loop_sleep):
+        try:
+            ping_loop_sleep = float(ping_loop_sleep)
+            self.PING_LOOP_SLEEP = ping_loop_sleep
+        except:
+            return
 
     # File path
     def set_current_file_path(self, file_path):
@@ -164,7 +182,19 @@ def init_curses(stdscr, raw_ips, raw_ips_names):
     curses.init_pair(4, curses.COLOR_RED, curses.COLOR_WHITE) # Timeout, selected
     curses.init_pair(5, curses.COLOR_BLACK, curses.COLOR_WHITE) # Status bar, neutral, selected
 
+    t = Thread(target=ping_loop, args=())
+    t.start()
+
     draw_loop()
+
+def ping_loop():
+    while (True):
+        for ip in screen.ips.get_ips_range(screen.top -1, screen.top + screen.max_lines):
+            t = Thread(target=screen.ips.get_ip(ip).ping)
+            t.daemon = True
+            t.start()
+        
+        time.sleep(screen.PING_LOOP_SLEEP)
 
 def draw_loop():
     while (True):
@@ -183,7 +213,7 @@ def draw_loop():
 
         # Closing loop
         screen.stdscr.refresh()
-        time.sleep(screen.PING_LOOP_SLEEP)
+        time.sleep(screen.CORE_LOOP_SLEEP)
 
         # Next input
         screen.k = screen.stdscr.getch()
@@ -217,6 +247,17 @@ def handle_input():
 
     elif screen.k == ord('h'):
         screen.toggle_drawing_help()
+
+    elif screen.k == ord('r'):
+        time.sleep(1)
+    
+    elif screen.k == ord('1'):
+        new_ping_loop = screen.request_input(i18n.CONFIG_PING_LOOP_SLEEP.format(screen.PING_LOOP_SLEEP))
+        screen.set_ping_loop_sleep(new_ping_loop)
+
+    # elif screen.k == ord('2'):
+    #     new_sleep = screen.request_input(i18n.CONFIG_CORE_LOOP_SLEEP.format(screen.CORE_LOOP_SLEEP))
+    #     screen.set_core_loop_sleep(new_sleep)
 
     elif screen.k == ord('s'):
         current_file_path = screen.get_current_file_path()
@@ -267,14 +308,12 @@ def draw_ping():
         if (idx == screen.line):
             screen.selected_ip = ip
             is_selected = True
-
-        t = Thread(target=exe_ping, args=(screen.ips.get_ip(ip), idx, is_selected))
-        t.daemon = True
-        t.start()
+        
+        _draw_ping(screen.ips.get_ip(ip), idx, is_selected)
 
     if no_ips: screen.stdscr.addstr(0,0,i18n.DRAW_NO_IP)
 
-def exe_ping(oip, current_line, is_selected):
+def _draw_ping(oip, current_line, is_selected):
     ip, name, ping_last, is_timeout = oip.get_result()
     if name: ip = '{} - {}'.format(name, ip)
 
@@ -290,6 +329,3 @@ def exe_ping(oip, current_line, is_selected):
         screen.stdscr.addstr(current_line, 0, i18n.PING_RESULT.format(ip, ping_last), curses.color_pair(3))
     elif not is_selected:
         screen.stdscr.addstr(current_line, 0, i18n.PING_RESULT.format(ip, ping_last), curses.color_pair(1))
-    
-    oip.ping()
-    sys.exit()
