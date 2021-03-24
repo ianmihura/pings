@@ -260,10 +260,6 @@ def handle_input():
         new_ping_loop = screen.request_input(i18n.CONFIG_PING_LOOP_SLEEP.format(screen.PING_LOOP_SLEEP))
         screen.set_ping_loop_sleep(new_ping_loop)
 
-    # elif screen.k == ord('2'):
-    #     new_sleep = screen.request_input(i18n.CONFIG_CORE_LOOP_SLEEP.format(screen.CORE_LOOP_SLEEP))
-    #     screen.set_core_loop_sleep(new_sleep)
-
     elif screen.k == ord('s'):
         current_file_path = screen.get_current_file_path()
         file_path = screen.request_input(i18n.SAVE_FILE_PATH.format(
@@ -284,7 +280,7 @@ def handle_input():
 
 def draw_bar():
     range_top, range_bottom = screen.ips.get_range()
-    info_bar = i18n.INFO_BAR.format(
+    info_bar = " " + i18n.INFO_BAR.format(
         screen.selected_ip, 
         range_top if range_top >= 0 else 0,
         min(len(screen.ips.get_ips()), range_bottom),
@@ -296,13 +292,13 @@ def draw_bar():
     next_available = -2
 
     if (screen.is_drawing_help):
-        help_bar = i18n.HELP_BAR
+        help_bar = " " + i18n.HELP_BAR
         help_bar += (" " * (screen.width - len(help_bar) - 1))
         screen.stdscr.addstr(screen.height + next_available, 0, help_bar, curses.color_pair(5))
         next_available -= 1
     
     if (screen.is_drawing_status):
-        status_bar = screen.get_status()
+        status_bar = " " + screen.get_status()
         status_bar += (" " * (screen.width - len(status_bar) - 1))
         screen.stdscr.addstr(screen.height + next_available, 0, status_bar, curses.color_pair(5))
     

@@ -8,4 +8,4 @@ enter on ip -- config
     edit name
     delete
 
-close loop
+on delete ip - order (may crash)
