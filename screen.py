@@ -7,7 +7,7 @@ from threading import Thread, active_count
 
 import ip
 import i18n
-import xfile
+import profile
 
 class Screen:
 
@@ -32,7 +32,7 @@ class Screen:
         self.page = 0
 
         # Other screen settings
-        self.current_file_path = ''
+        self.current_profile = ''
         self.status = ''
         self.status_history = []
         self.selected_ip = ''
@@ -71,11 +71,11 @@ class Screen:
             return
 
     # File path
-    def set_current_file_path(self, file_path):
-        self.current_file_path = file_path
+    def set_current_profile(self, profile):
+        self.current_profile = profile
 
-    def get_current_file_path(self):
-        return self.current_file_path
+    def get_current_profile(self):
+        return self.current_profile
 
     # Status
     def set_status(self, new_status):
@@ -148,7 +148,7 @@ class Screen:
             self.top += self.max_lines
     
     # Request user input
-    def request_input(self, title):
+    def request_input(self, title, content=''):
         self.stdscr.addstr(0, 0, title)
         add_stdscr = curses.newwin(1, 60, 2, 1)
         
@@ -207,14 +207,14 @@ def draw_loop():
         screen.stdscr.clear()
         screen.init_meassures()
 
-        # Handle input
-        handle_input()
-
         # Ping loop
         draw_ping()
-            
+        
         # Draw title and status bar
         draw_bar()
+
+        # Handle input
+        handle_input()
 
         # Closing loop
         screen.stdscr.refresh()
@@ -254,28 +254,28 @@ def handle_input():
         screen.toggle_drawing_help()
 
     elif screen.k == ord('r'):
-        time.sleep(1)
+        time.sleep(3)
     
-    elif screen.k == ord('1'):
+    elif screen.k == ord('p'):
         new_ping_loop = screen.request_input(i18n.CONFIG_PING_LOOP_SLEEP.format(screen.PING_LOOP_SLEEP))
         screen.set_ping_loop_sleep(new_ping_loop)
 
     elif screen.k == ord('s'):
-        current_file_path = screen.get_current_file_path()
-        file_path = screen.request_input(i18n.SAVE_FILE_PATH.format(
-            current_file_path if current_file_path else '> NO CURRENT FILE <'))        
-        result_status = xfile.save_file(file_path, current_file_path, screen.ips.get_ips())
-        screen.set_current_file_path(file_path)
+        current_profile = screen.get_current_profile()
+        new_profile = screen.request_input(i18n.SAVE_PROFILE.format(
+            current_profile if current_profile else '> NO CURRENT PROFILE <'))        
+        result_status = profile.save_profile(new_profile, current_profile, screen.ips.get_ips())
+        screen.set_current_profile(profile)
         screen.set_status(result_status)
         
     elif screen.k == ord('q'):
-        current_file_path = screen.get_current_file_path()
+        current_profile = screen.get_current_profile()
         screen.close = True
-        if not current_file_path: sys.exit()
+        if not current_profile: sys.exit()
         else:
-            save_file = screen.request_input(i18n.SAVE_FILE_EXIT.format(current_file_path)).upper()
-            if save_file == 'Y' or save_file == 'YES':
-                xfile.save_file(current_file_path, current_file_path, screen.ips.get_ips())
+            save_profile = screen.request_input(i18n.SAVE_PROFILE_EXIT.format(current_profile)).upper()
+            if save_profile == 'Y' or save_profile == 'YES':
+                profile.save_profile(current_profile, current_profile, screen.ips.get_ips())
             sys.exit()
 
 def draw_bar():

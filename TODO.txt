@@ -4,8 +4,6 @@ execute as module
     change name to pings.exe
     add to PATH
 
-enter on ip -- config
-    edit name
-    delete
-
 on delete ip - order (may crash)
+
+get name on edit entry
