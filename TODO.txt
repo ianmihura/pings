@@ -1,9 +1,0 @@
-
-execute as module
-    compile.bat
-    change name to pings.exe
-    add to PATH
-
-on delete ip - order (may crash)
-
-get name on edit entry

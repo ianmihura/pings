@@ -154,6 +154,7 @@ class Screen:
         
         rectangle(self.stdscr, 1, 0, 3, 62)
         self.stdscr.refresh()
+        add_stdscr.addstr(0,0,content)
 
         box = Textbox(add_stdscr)
         box.stripspaces = True
@@ -247,7 +248,7 @@ def handle_input():
 
     elif screen.k == ord('n'):
         old_name = screen.ips.get_ip(screen.selected_ip).get_name()
-        new_name = screen.request_input(i18n.EDIT_IP_TITLE.format(screen.selected_ip, old_name))
+        new_name = screen.request_input(i18n.EDIT_IP_TITLE.format(screen.selected_ip), old_name)
         screen.ips.get_ip(screen.selected_ip).set_name(new_name)
 
     elif screen.k == ord('h'):
@@ -257,13 +258,14 @@ def handle_input():
         time.sleep(3)
     
     elif screen.k == ord('p'):
-        new_ping_loop = screen.request_input(i18n.CONFIG_PING_LOOP_SLEEP.format(screen.PING_LOOP_SLEEP))
+        new_ping_loop_title = i18n.CONFIG_PING_LOOP_SLEEP.format(screen.PING_LOOP_SLEEP)
+        new_ping_loop = screen.request_input(new_ping_loop_title, screen.PING_LOOP_SLEEP)
         screen.set_ping_loop_sleep(new_ping_loop)
 
     elif screen.k == ord('s'):
         current_profile = screen.get_current_profile()
         new_profile = screen.request_input(i18n.SAVE_PROFILE.format(
-            current_profile if current_profile else '> NO CURRENT PROFILE <'))        
+            current_profile if current_profile else '> NO CURRENT PROFILE <'), current_profile)        
         result_status = profile.save_profile(new_profile, current_profile, screen.ips.get_ips())
         screen.set_current_profile(profile)
         screen.set_status(result_status)
@@ -273,7 +275,8 @@ def handle_input():
         screen.close = True
         if not current_profile: sys.exit()
         else:
-            save_profile = screen.request_input(i18n.SAVE_PROFILE_EXIT.format(current_profile)).upper()
+            save_profile_title = i18n.SAVE_PROFILE_EXIT.format(current_profile)
+            save_profile = screen.request_input(save_profile_title).upper()
             if save_profile == 'Y' or save_profile == 'YES':
                 profile.save_profile(current_profile, current_profile, screen.ips.get_ips())
             sys.exit()
