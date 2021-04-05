@@ -259,7 +259,7 @@ def handle_input():
     
     elif screen.k == ord('p'):
         new_ping_loop_title = i18n.CONFIG_PING_LOOP_SLEEP.format(screen.PING_LOOP_SLEEP)
-        new_ping_loop = screen.request_input(new_ping_loop_title, screen.PING_LOOP_SLEEP)
+        new_ping_loop = screen.request_input(new_ping_loop_title, str(screen.PING_LOOP_SLEEP))
         screen.set_ping_loop_sleep(new_ping_loop)
 
     elif screen.k == ord('s'):
