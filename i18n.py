@@ -5,7 +5,7 @@ ARGS_HELP_PROFILE = "Profile containing ip addresses or subnets, automatically s
 DRAW_TITLE = "Pinging your IPs:"
 DRAW_NO_IP = "Press 'a' to add an ip"
 
-INFO_BAR = "Selected IP: {} | Showing entry {}-{} (total: {}) | Threads {}"
+INFO_BAR = "Selected IP: {} | Showing entry {}-{} (total: {}) | Threads {} | h: help"
 HELP_BAR = "q: exit | a: add IP | n: edit name | x: delete IP | s: save profile | p: change ping time"
 
 PING_TIMEOUT = "Ping {} timeout"
