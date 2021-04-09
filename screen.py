@@ -266,8 +266,8 @@ def handle_input():
         current_profile = screen.get_current_profile()
         new_profile = screen.request_input(i18n.SAVE_PROFILE.format(
             current_profile if current_profile else '> NO CURRENT PROFILE <'), current_profile)        
-        result_status = profile.save_profile(new_profile, current_profile, screen.ips.get_ips())
-        screen.set_current_profile(profile)
+        result_status, saved_profile = profile.save_profile(new_profile, current_profile, screen.ips.get_ips())
+        screen.set_current_profile(saved_profile)
         screen.set_status(result_status)
         
     elif screen.k == ord('q'):

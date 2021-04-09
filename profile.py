@@ -37,12 +37,13 @@ def save_profile(profile, current_profile, ips):
     file_path = get_profile_path(profile)
     current_file_path = get_profile_path(current_profile)
 
-    result = ''
-    if file_path: result = _save_file(file_path, ips, False)
+    if file_path: 
+        return (_save_file(file_path, ips, False), profile)
     else:
-        if current_file_path: result = _save_file(current_file_path, ips, True)
-        else: result = i18n.FILE_PATH_NOT_PRESENT
-    return result
+        if current_file_path: 
+            return (_save_file(current_file_path, ips, True), current_file_path)
+        else:
+            return (i18n.FILE_PATH_NOT_PRESENT, '')
 
 def _save_file(file_path, ips, is_overwrite):
     result = ''

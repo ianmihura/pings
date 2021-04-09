@@ -1,2 +1,2 @@
-pyinstaller main.py --noconfirm 
-REN dist\main\main.exe pings.exe
+pyinstaller --onefile main.py
+REN dist\main.exe pings.exe
