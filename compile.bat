@@ -1,2 +1,4 @@
+cd C:\Users\39544686g\Desktop\pings\
 pyinstaller --onefile main.py
-REN dist\main.exe pings.exe
+COPY /B /Y dist\main.exe /B %SystemRoot%\System32\pings.exe
+pause
