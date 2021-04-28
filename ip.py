@@ -7,6 +7,7 @@ class IPs (object):
     ips = {}
     range_top = 0
     range_bottom = 0
+    timeout_ips = 0
 
     def __init__(self):
         ips = {}
@@ -38,7 +39,7 @@ class IPs (object):
         range_ips = []
         self.range_top = top
         self.range_bottom = bottom
-        timeout_ips = 0
+        self.timeout_ips = 0
         for idx, ip in enumerate(self.ips):
             if (idx > top) and (idx < bottom):
                 if is_drawing_timeout:
@@ -47,8 +48,8 @@ class IPs (object):
                     if not self.ips[ip].is_timeout:
                         range_ips.append(ip)
                     else:
-                        timeout_ips += 1 
-        return (timeout_ips, range_ips)
+                        self.timeout_ips += 1 
+        return range_ips
     
     def get_range(self):
         return (self.range_top, self.range_bottom)

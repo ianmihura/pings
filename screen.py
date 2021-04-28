@@ -196,7 +196,11 @@ def init_curses(stdscr, raw_ips, raw_ips_names):
 
 def ping_loop():
     while (True):
-        timeout_ips, ips = screen.ips.get_ips_range(screen.top -1, screen.top + screen.max_lines, screen.is_drawing_timeout)
+        ips = screen.ips.get_ips_range(
+            screen.top -1, 
+            screen.top + screen.max_lines + screen.ips.timeout_ips, 
+            screen.is_drawing_timeout )
+
         for ip in ips:
             t = Thread(target=screen.ips.get_ip(ip).ping)
             t.daemon = True
@@ -315,7 +319,11 @@ def draw_bar():
     
 def draw_ping():
     no_ips = True
-    timeout_ips, ips = screen.ips.get_ips_range(screen.top -1, screen.top + screen.max_lines, screen.is_drawing_timeout)
+    ips = screen.ips.get_ips_range(
+        screen.top -1, 
+        screen.top + screen.max_lines + screen.ips.timeout_ips, 
+        screen.is_drawing_timeout )
+
     for idx, ip in enumerate(ips):
         no_ips = False
         is_selected = False
@@ -328,18 +336,21 @@ def draw_ping():
     if no_ips: screen.stdscr.addstr(0,0,i18n.DRAW_NO_IP)
 
 def _draw_ping(oip, current_line, is_selected):
+    if current_line > screen.max_lines:
+        return
+
     ip, name, ping_last, is_timeout = oip.get_result()
     if name: ip = '{} - {}'.format(name, ip)
 
-    if is_timeout and is_selected:
+    if is_timeout and is_selected: # Timeout, selected
         screen.stdscr.addstr(current_line, 0, i18n.PING_TIMEOUT.format(ip), curses.color_pair(4))
-    elif is_timeout and not is_selected:
+    elif is_timeout and not is_selected: # Timeout, not selected
         screen.stdscr.addstr(current_line, 0, i18n.PING_TIMEOUT.format(ip), curses.color_pair(2))
-    elif ping_last == 0 and is_selected:
+    elif ping_last == 0 and is_selected: # Status bar, neutral, selected
         screen.stdscr.addstr(current_line, 0, i18n.PING_WAITING.format(ip), curses.color_pair(5))
     elif ping_last == 0 and not is_selected:
         screen.stdscr.addstr(current_line, 0, i18n.PING_WAITING.format(ip))
-    elif is_selected:
+    elif is_selected: # Online, selected
         screen.stdscr.addstr(current_line, 0, i18n.PING_RESULT.format(ip, ping_last), curses.color_pair(3))
-    elif not is_selected:
+    elif not is_selected: # Online, not selected
         screen.stdscr.addstr(current_line, 0, i18n.PING_RESULT.format(ip, ping_last), curses.color_pair(1))
