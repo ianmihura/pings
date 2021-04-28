@@ -1,6 +1,10 @@
 ARGS_HELP_IPS = "List of IP addresses or subnets to ping, separated by a comma. Example 8.8.8.8,4.4.4.4/29"
 ARGS_HELP_FILE = "File containing ip addresses or subnets, separated by commas."
 ARGS_HELP_PROFILE = "Profile containing ip addresses or subnets, automatically saved in APPDATA directory"
+ARGS_HELP_README = "Print README file to console"
+ARGS_HELP_SHOW_PROFILES = "Show all save profiles"
+SHOW_PROFILES_TITLE = "All profiles in {}"
+SHOW_PROFILE = "Profile {} : {}..."
 
 DRAW_TITLE = "Pinging your IPs:"
 DRAW_NO_IP = "Press 'a' to add an ip"

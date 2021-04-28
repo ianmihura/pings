@@ -1,7 +1,7 @@
 import sys,os
 import i18n
 
-IPS_PROFILES_PATH = os.getenv('APPDATA') + '\\ips\\profiles'
+IPS_PROFILES_PATH = os.getenv('APPDATA') + '\\pings'
 
 def get_profile_path(profile):
     return IPS_PROFILES_PATH + "\\" + profile
@@ -9,6 +9,15 @@ def get_profile_path(profile):
 def check_profiles():
     if not os.path.isdir(IPS_PROFILES_PATH):
         os.makedirs(IPS_PROFILES_PATH)
+
+def get_all_profiles():
+    profiles_path = IPS_PROFILES_PATH
+    profile_names = [f for f in os.listdir(profiles_path) if os.path.isfile(os.path.join(profiles_path, f))]
+    profile_content = []
+    for p in profile_names:
+        with open(get_profile_path(p), 'r') as _profile_content:
+            profile_content.append(_profile_content.read(15).split(',')[0])
+    return (profile_names, profile_content)
 
 def get_ips_from_profile(profile):
     profile_path = get_profile_path(profile)
