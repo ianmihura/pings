@@ -34,14 +34,21 @@ class IPs (object):
     def get_ips(self):
         return self.ips
     
-    def get_ips_range(self, top, bottom):
+    def get_ips_range(self, top, bottom, is_drawing_timeout=True):
         range_ips = []
         self.range_top = top
         self.range_bottom = bottom
+        timeout_ips = 0
         for idx, ip in enumerate(self.ips):
             if (idx > top) and (idx < bottom):
-                range_ips.append(ip)
-        return range_ips
+                if is_drawing_timeout:
+                    range_ips.append(ip)
+                else:
+                    if not self.ips[ip].is_timeout:
+                        range_ips.append(ip)
+                    else:
+                        timeout_ips += 1 
+        return (timeout_ips, range_ips)
     
     def get_range(self):
         return (self.range_top, self.range_bottom)

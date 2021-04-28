@@ -6,7 +6,7 @@ DRAW_TITLE = "Pinging your IPs:"
 DRAW_NO_IP = "Press 'a' to add an ip"
 
 INFO_BAR = "Selected IP: {} | Showing entry {}-{} (total: {}) | Threads {} | h: help"
-HELP_BAR = "q: exit | a: add IP | n: edit name | x: delete IP | s: save profile | p: change ping time"
+HELP_BAR = "q: exit | a: add IP | n: edit name | x: delete IP | s: save profile | p: change ping time | t: show timeout"
 
 PING_TIMEOUT = "Ping {} timeout"
 PING_RESULT = "Ping {} in {} ms"

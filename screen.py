@@ -38,6 +38,7 @@ class Screen:
         self.selected_ip = ''
         self.is_drawing_help = False
         self.is_drawing_status = False
+        self.is_drawing_timeout = True
         self.close = False
     
     def init_meassures(self):
@@ -53,6 +54,9 @@ class Screen:
     
     def toggle_drawing_help(self):
         self.is_drawing_help = not self.is_drawing_help
+    
+    def toggle_drawing_timeout(self):
+        self.is_drawing_timeout = not self.is_drawing_timeout
 
     def set_timeout(self, timeout):
         try:
@@ -192,7 +196,8 @@ def init_curses(stdscr, raw_ips, raw_ips_names):
 
 def ping_loop():
     while (True):
-        for ip in screen.ips.get_ips_range(screen.top -1, screen.top + screen.max_lines):
+        timeout_ips, ips = screen.ips.get_ips_range(screen.top -1, screen.top + screen.max_lines, screen.is_drawing_timeout)
+        for ip in ips:
             t = Thread(target=screen.ips.get_ip(ip).ping)
             t.daemon = True
             t.start()
@@ -254,6 +259,9 @@ def handle_input():
     elif screen.k == ord('h'):
         screen.toggle_drawing_help()
 
+    elif screen.k == ord('t'):
+        screen.toggle_drawing_timeout()
+
     elif screen.k == ord('r'):
         time.sleep(3)
     
@@ -307,7 +315,8 @@ def draw_bar():
     
 def draw_ping():
     no_ips = True
-    for idx, ip in enumerate(screen.ips.get_ips_range(screen.top -1, screen.top + screen.max_lines)):
+    timeout_ips, ips = screen.ips.get_ips_range(screen.top -1, screen.top + screen.max_lines, screen.is_drawing_timeout)
+    for idx, ip in enumerate(ips):
         no_ips = False
         is_selected = False
         if (idx == screen.line):
