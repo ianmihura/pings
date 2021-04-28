@@ -5,6 +5,7 @@ import curses
 import screen
 import i18n
 import profile
+import README
 
 def main():
     # Get parsed arguements
@@ -19,30 +20,28 @@ def main():
     raw_ips = []
     raw_ips_names = []
     
-    # Enter via args
-    if args.ips:
-        raw_ips = args.ips.split(',')
-        raw_ips_names = [''] * len(raw_ips)
-
-    # Enter via profile
-    elif args.profile:
-        (raw_ips, raw_ips_names) = profile.get_ips_from_profile(args.profile)
-        screen.screen.set_current_profile(args.profile)
-
-    elif args.readme:
-        with open("README", 'r') as f:
-            print(f.read())
-        return
+    if args.readme:
+        print(README.text)
 
     elif args.show:
         (profile_names, profile_content) = profile.get_all_profiles()
         print(i18n.SHOW_PROFILES_TITLE.format(profile.IPS_PROFILES_PATH))
         for i, p in enumerate(profile_names):
             print(i18n.SHOW_PROFILE.format(profile_names[i], profile_content[i]))
-        return
+    
+    else:
+        # Enter via ips
+        if args.ips:
+            raw_ips = args.ips.split(',')
+            raw_ips_names = [''] * len(raw_ips)
 
-    # Start main curses loop
-    curses.wrapper(screen.init_curses, raw_ips, raw_ips_names)
+        # Enter via profile
+        elif args.profile:
+            (raw_ips, raw_ips_names) = profile.get_ips_from_profile(args.profile)
+            screen.screen.set_current_profile(args.profile)
+
+        # Start main curses loop
+        curses.wrapper(screen.init_curses, raw_ips, raw_ips_names)
 
 if __name__ == '__main__':
     main()

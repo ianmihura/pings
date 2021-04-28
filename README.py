@@ -1,4 +1,4 @@
-Documentation
+text = """Documentation
 
 Continuously pings a list of IPs
 You can add names to the IPs to identify them easily
@@ -49,4 +49,4 @@ Keyboard shortcuts
         q
             Peacefully quits
             Will ask if you want to save changes if its working with a profile
-            Will save changes ONLY IF you type in y or yes [Y or YES]
+            Will save changes ONLY IF you type in y or yes [Y or YES]"""
