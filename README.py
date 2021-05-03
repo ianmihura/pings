@@ -17,6 +17,8 @@ Flags
     -s
         Shows profiles available
         Default to %appdata%
+    -r
+        Shows README file
     -h
         Get help for flags
     
@@ -39,6 +41,7 @@ Keyboard shortcuts
             Add/change name of selected IP
         t
             Hide/show timeout IPs
+            Paging & scrolling may feel awkward
     General config
         r
             Sleeps for 3 seconds - Refresh
