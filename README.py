@@ -1,8 +1,8 @@
-text = """Documentation
+# pings
 
-Continuously pings a list of IPs
-You can add names to the IPs to identify them easily
-IP list and names can be saved to profiles in %appdata%
+Is a python program that helps you ping a list of IP addresses, or a subnet.
+
+You can add aliases to the IPs to identify them easily, make lists and saved your preferences to profiles in %appdata% (originally developed for Windows environment).
 
 Flags
     [null]
